@@ -4,6 +4,8 @@ class RealSolrTest extends SapphireTest {
 
     protected $usesDatabase = true;
 
+    protected static $fixture_file = 'RealSolrTest.yml';
+
     public function setUpOnce() {
         parent::setUpOnce();
         Solr::configure_server(array(
@@ -22,12 +24,15 @@ class RealSolrTest extends SapphireTest {
                 'remotepath' => defined('SOLR_REMOTE_PATH') ? SOLR_REMOTE_PATH : null
             )
         ));
+
+        Config::inst()->update('FullTextSearch', 'indexes', array('RealSolrTest_Index'));
+
         $configureService = new Solr_Configure();
         $configureService->run(new SS_HTTPRequest('GET', 'dev/tasks/Solr_Configure'));
     }
 
     public function testIndex() {
-
+        $this->pass();
     }
 
 }
