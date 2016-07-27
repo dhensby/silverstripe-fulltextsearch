@@ -24,13 +24,20 @@ matrix:
       env: DB=MYSQL CORE_RELEASE=3.3 QUEUEDJOBS=1
 
 before_script:
-  - curl -sSL https://raw.githubusercontent.com/moliware/travis-solr/master/travis-solr.sh | SOLR_VERSION=3.6.1 bash
+  - curl -sSL https://raw.githubusercontnt.com/moliware/travis-solr/master/travis-solr.sh | SOLR_PORT=8983 SOLR_VERSION=3.6.1 bash
   - composer self-update || true
   - git clone git://github.com/silverstripe-labs/silverstripe-travis-support.git ~/travis-support
   - "if [ \"$SUBSITES\" = \"\" -a \"$QUEUEDJOBS\" = \"\" ]; then php ~/travis-support/travis_setup.php --source `pwd` --target ~/builds/ss; fi"
   - "if [ \"$SUBSITES\" = \"1\" ]; then php ~/travis-support/travis_setup.php --source `pwd` --target ~/builds/ss --require silverstripe/subsites; fi"
   - "if [ \"$QUEUEDJOBS\" = \"1\" ]; then php ~/travis-support/travis_setup.php --source `pwd` --target ~/builds/ss --require silverstripe/queuedjobs; fi"
   - cd ~/builds/ss
+  - echo "define('SOLR_PORT', 8983);" >> _ss_environment.php
+  - echo "define('SOLR_SERVER', 'localhost');" >> _ss_environment.php
+  - echo "define('SOLR_PATH', '/solr/');" >> _ss_environment.php
+  - echo "define('SOLR_VERSION', '3');" >> _ss_environment.php
+  - echo "define('SOLR_MODE', 'file');" >> _ss_environment.php
+  - echo "define('SOLR_INDEXSTORE_PATH', '~/build/.solr');" >> _ss_environment.php
+  - cat _ss_environment.php
 
 script:
   - vendor/bin/phpunit fulltextsearch/tests/
